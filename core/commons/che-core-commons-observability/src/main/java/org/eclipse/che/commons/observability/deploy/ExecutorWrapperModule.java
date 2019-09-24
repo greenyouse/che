@@ -28,6 +28,5 @@ public class ExecutorWrapperModule extends AbstractModule {
     } else {
       bind(ExecutorWrapper.class).to(TracingExecutorWrapper.class);
     }
-    // bind(ThreadPullLauncher.class).to(ObservableThreadPullLauncher.class);
   }
 }

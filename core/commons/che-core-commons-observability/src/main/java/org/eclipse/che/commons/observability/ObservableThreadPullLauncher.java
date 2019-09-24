@@ -13,13 +13,16 @@ package org.eclipse.che.commons.observability;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.micrometer.core.instrument.Tags;
+import javax.inject.Inject;
 import javax.inject.Named;
 import org.eclipse.che.commons.lang.concurrent.LoggingUncaughtExceptionHandler;
 import org.eclipse.che.commons.schedule.executor.CronThreadPoolExecutor;
 import org.eclipse.che.commons.schedule.executor.ThreadPullLauncher;
 
 public class ObservableThreadPullLauncher extends ThreadPullLauncher {
-  protected ObservableThreadPullLauncher(
+
+  @Inject
+  public ObservableThreadPullLauncher(
       ExecutorWrapper wrapper, @Named("schedule.core_pool_size") Integer corePoolSize) {
     super(
         wrapper.wrap(

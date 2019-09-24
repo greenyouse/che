@@ -71,6 +71,7 @@ import org.eclipse.che.api.workspace.server.wsplugins.ChePluginsApplier;
 import org.eclipse.che.commons.auth.token.ChainedTokenExtractor;
 import org.eclipse.che.commons.auth.token.RequestTokenExtractor;
 import org.eclipse.che.commons.observability.deploy.ExecutorWrapperModule;
+import org.eclipse.che.commons.observability.deploy.ThreadPullLauncherModule;
 import org.eclipse.che.core.db.DBTermination;
 import org.eclipse.che.core.db.schema.SchemaInitializer;
 import org.eclipse.che.core.tracing.metrics.TracingMetricsModule;
@@ -277,6 +278,7 @@ public class WsMasterModule extends AbstractModule {
       install(new TracingMetricsModule());
     }
     install(new ExecutorWrapperModule());
+    install(new ThreadPullLauncherModule());
   }
 
   private void configureSingleUserMode(Map<String, String> persistenceProperties) {
