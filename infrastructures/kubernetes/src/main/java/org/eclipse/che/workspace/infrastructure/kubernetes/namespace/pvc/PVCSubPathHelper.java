@@ -24,6 +24,7 @@ import io.fabric8.kubernetes.api.model.ContainerBuilder;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodBuilder;
 import io.fabric8.kubernetes.api.model.PodStatus;
+import io.micrometer.core.instrument.Tags;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -36,6 +37,7 @@ import javax.inject.Singleton;
 import org.eclipse.che.api.workspace.server.spi.InfrastructureException;
 import org.eclipse.che.commons.lang.concurrent.LoggingUncaughtExceptionHandler;
 import org.eclipse.che.commons.lang.concurrent.ThreadLocalPropagateContext;
+import org.eclipse.che.commons.observability.ExecutorWrapper;
 import org.eclipse.che.workspace.infrastructure.kubernetes.namespace.KubernetesDeployments;
 import org.eclipse.che.workspace.infrastructure.kubernetes.namespace.KubernetesNamespaceFactory;
 import org.eclipse.che.workspace.infrastructure.kubernetes.provision.SecurityContextProvisioner;
@@ -85,19 +87,23 @@ public class PVCSubPathHelper {
       @Named("che.infra.kubernetes.pvc.jobs.memorylimit") String jobMemoryLimit,
       @Named("che.infra.kubernetes.pvc.jobs.image") String jobImage,
       KubernetesNamespaceFactory factory,
-      SecurityContextProvisioner securityContextProvisioner) {
+      SecurityContextProvisioner securityContextProvisioner,
+      ExecutorWrapper executorWrapper) {
     this.jobMemoryLimit = jobMemoryLimit;
     this.jobImage = jobImage;
     this.factory = factory;
     this.securityContextProvisioner = securityContextProvisioner;
     this.executor =
-        Executors.newFixedThreadPool(
-            COUNT_THREADS,
-            new ThreadFactoryBuilder()
-                .setNameFormat("PVCSubPathHelper-ThreadPool-%d")
-                .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
-                .setDaemon(false)
-                .build());
+        executorWrapper.wrap(
+            Executors.newFixedThreadPool(
+                COUNT_THREADS,
+                new ThreadFactoryBuilder()
+                    .setNameFormat("PVCSubPathHelper-ThreadPool-%d")
+                    .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
+                    .setDaemon(false)
+                    .build()),
+            PVCSubPathHelper.class.getName(),
+            Tags.empty());
   }
 
   /**

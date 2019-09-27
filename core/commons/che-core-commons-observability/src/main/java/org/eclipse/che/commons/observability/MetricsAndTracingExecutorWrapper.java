@@ -31,7 +31,8 @@ public class MetricsAndTracingExecutorWrapper extends TracingExecutorWrapper {
 
   @Override
   public ScheduledExecutorService wrap(ScheduledExecutorService executor, String name, Tags tags) {
-    return super.wrap(executor, name, tags);
+    return super.wrap(
+        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, tags), name, tags);
   }
 
   @Override
