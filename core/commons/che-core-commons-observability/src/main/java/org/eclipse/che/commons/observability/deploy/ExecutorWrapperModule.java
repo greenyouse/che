@@ -12,6 +12,8 @@
 package org.eclipse.che.commons.observability.deploy;
 
 import com.google.inject.AbstractModule;
+import org.eclipse.che.commons.lang.execution.ExecutorServiceWrapper;
+import org.eclipse.che.commons.lang.execution.NopExecutorServiceWrapper;
 import org.eclipse.che.commons.observability.*;
 
 public class ExecutorWrapperModule extends AbstractModule {
@@ -21,12 +23,12 @@ public class ExecutorWrapperModule extends AbstractModule {
 
     if (!Boolean.valueOf(System.getenv("CHE_METRICS_ENABLED"))
         && !Boolean.valueOf(System.getenv("CHE_TRACING_ENABLED"))) {
-      bind(ExecutorWrapper.class).to(NopExecutorWrapper.class);
+      bind(ExecutorServiceWrapper.class).to(NopExecutorServiceWrapper.class);
     } else if (Boolean.valueOf(System.getenv("CHE_METRICS_ENABLED"))) {
       // the situation with disabled tracing handled over NopTracer
-      bind(ExecutorWrapper.class).to(MetricsAndTracingExecutorWrapper.class);
+      //bind(ExecutorWrapper.class).to(MetricsAndTracingExecutorWrapper.class);
     } else {
-      bind(ExecutorWrapper.class).to(TracingExecutorWrapper.class);
+      //bind(ExecutorWrapper.class).to(TracingExecutorWrapper.class);
     }
   }
 }

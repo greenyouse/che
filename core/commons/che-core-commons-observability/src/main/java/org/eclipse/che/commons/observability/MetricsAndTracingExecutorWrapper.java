@@ -29,30 +29,30 @@ public class MetricsAndTracingExecutorWrapper extends TracingExecutorWrapper {
     this.meterRegistry = meterRegistry;
   }
 
-  @Override
-  public ScheduledExecutorService wrap(ScheduledExecutorService executor, String name, Tags tags) {
-    return super.wrap(
-        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, tags), name, tags);
-  }
-
-  @Override
-  public ExecutorService wrap(ExecutorService executor, String name, Tags tags) {
-    return super.wrap(
-        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, tags), name, tags);
-  }
-
-  @Override
-  public Executor wrap(Executor executor, String name, Tags tags) {
-    return super.wrap(
-        io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics.monitor(
-            meterRegistry, executor, name, tags),
-        name,
-        tags);
-  }
-
-  @Override
-  public CronExecutorService wrap(CronExecutorService executor, String name, Tags tags) {
-    return super.wrap(
-        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, tags), name, tags);
-  }
+//  @Override
+//  public ScheduledExecutorService wrap(ScheduledExecutorService executor, String name, Tags tags) {
+//    return super.wrap(
+//        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, tags), name, tags);
+//  }
+//
+//  @Override
+//  public ExecutorService wrap(ExecutorService executor, String name, Tags tags) {
+//    return super.wrap(
+//        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, tags), name, tags);
+//  }
+//
+//  @Override
+//  public Executor wrap(Executor executor, String name, Tags tags) {
+//    return super.wrap(
+//        io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics.monitor(
+//            meterRegistry, executor, name, tags),
+//        name,
+//        tags);
+//  }
+//
+//  @Override
+//  public CronExecutorService wrap(CronExecutorService executor, String name, Tags tags) {
+//    return super.wrap(
+//        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, tags), name, tags);
+//  }
 }

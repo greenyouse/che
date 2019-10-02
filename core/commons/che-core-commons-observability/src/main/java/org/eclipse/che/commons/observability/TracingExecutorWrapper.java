@@ -11,43 +11,29 @@
  */
 package org.eclipse.che.commons.observability;
 
-import io.micrometer.core.instrument.Tags;
 import io.opentracing.Tracer;
-import io.opentracing.contrib.concurrent.TracedExecutor;
-import io.opentracing.contrib.concurrent.TracedExecutorService;
-import io.opentracing.contrib.concurrent.TracedScheduledExecutorService;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
+import org.eclipse.che.commons.lang.execution.ExecutorServiceWrapper;
+
 import javax.inject.Inject;
-import org.eclipse.che.commons.schedule.executor.CronExecutorService;
+import java.lang.reflect.Proxy;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
-public class TracingExecutorWrapper implements ExecutorWrapper {
+public class TracingExecutorWrapper implements ExecutorServiceWrapper {
 
-  private final Tracer tracer;
 
-  @Inject
-  public TracingExecutorWrapper(Tracer tracer) {
-    this.tracer = tracer;
-  }
+    private final Tracer tracer;
 
-  @Override
-  public ExecutorService wrap(ExecutorService executor, String name, Tags tags) {
-    return new TracedExecutorService(executor, tracer);
-  }
+    @Inject
+    public TracingExecutorWrapper(Tracer tracer) {
+        this.tracer = tracer;
+    }
 
-  @Override
-  public Executor wrap(Executor executor, String name, Tags tags) {
-    return new TracedExecutor(executor, tracer);
-  }
-
-  @Override
-  public ScheduledExecutorService wrap(ScheduledExecutorService executor, String name, Tags tags) {
-    return new TracedScheduledExecutorService(executor, tracer);
-  }
-
-  @Override
-  public CronExecutorService wrap(CronExecutorService executor, String name, Tags tags) {
-    return new TracedCronExecutorService(executor, tracer);
-  }
+    @Override
+    public <E extends ExecutorService> E wrap(E executor, Class<E> executorType, String id, Map<String, String> tags) {
+        return (E) Proxy.newProxyInstance(
+                executor.getClass().getClassLoader(),
+                new Class[]{executorType},
+                new TracingExecutorServiceInvocationHandler());
+    }
 }
