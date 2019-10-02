@@ -81,7 +81,7 @@ import org.eclipse.che.api.workspace.server.spi.WorkspaceDao;
 import org.eclipse.che.api.workspace.server.spi.environment.InternalEnvironmentFactory;
 import org.eclipse.che.api.workspace.server.wsplugins.ChePluginsApplier;
 import org.eclipse.che.commons.env.EnvironmentContext;
-import org.eclipse.che.commons.observability.NopExecutorWrapper;
+import org.eclipse.che.commons.observability.NoopExecutorWrapper;
 import org.eclipse.che.commons.observability.deploy.ExecutorWrapperModule;
 import org.eclipse.che.commons.subject.SubjectImpl;
 import org.eclipse.che.commons.test.db.H2DBTestServer;
@@ -240,7 +240,7 @@ public class JpaEntitiesCascadeRemovalTest {
                     .toInstance(false);
                 bind(WorkspaceSharedPool.class)
                     .toInstance(
-                        new WorkspaceSharedPool("cached", null, null, new NopExecutorWrapper()));
+                        new WorkspaceSharedPool("cached", null, null, new NoopExecutorWrapper()));
 
                 bind(String[].class)
                     .annotatedWith(Names.named("che.auth.reserved_user_names"))

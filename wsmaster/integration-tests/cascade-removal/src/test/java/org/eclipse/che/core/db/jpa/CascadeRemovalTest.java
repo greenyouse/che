@@ -97,7 +97,7 @@ import org.eclipse.che.api.workspace.server.model.impl.devfile.ProjectImpl;
 import org.eclipse.che.api.workspace.server.model.impl.devfile.SourceImpl;
 import org.eclipse.che.api.workspace.server.spi.RuntimeInfrastructure;
 import org.eclipse.che.api.workspace.server.spi.WorkspaceDao;
-import org.eclipse.che.commons.observability.NopExecutorWrapper;
+import org.eclipse.che.commons.observability.NoopExecutorWrapper;
 import org.eclipse.che.commons.observability.deploy.ExecutorWrapperModule;
 import org.eclipse.che.commons.test.db.H2DBTestServer;
 import org.eclipse.che.commons.test.db.PersistTestModuleBuilder;
@@ -268,7 +268,7 @@ public class CascadeRemovalTest {
                 bind(AccountManager.class);
                 bind(WorkspaceSharedPool.class)
                     .toInstance(
-                        new WorkspaceSharedPool("cached", null, null, new NopExecutorWrapper()));
+                        new WorkspaceSharedPool("cached", null, null, new NoopExecutorWrapper()));
 
                 MapBinder.newMapBinder(binder(), String.class, ComponentIntegrityValidator.class)
                     .addBinding("kubernetes")

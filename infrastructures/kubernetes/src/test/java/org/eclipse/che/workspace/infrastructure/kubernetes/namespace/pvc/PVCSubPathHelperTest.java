@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 import org.eclipse.che.api.workspace.server.spi.InfrastructureException;
-import org.eclipse.che.commons.observability.NopExecutorWrapper;
+import org.eclipse.che.commons.observability.NoopExecutorWrapper;
 import org.eclipse.che.workspace.infrastructure.kubernetes.namespace.KubernetesDeployments;
 import org.eclipse.che.workspace.infrastructure.kubernetes.namespace.KubernetesNamespace;
 import org.eclipse.che.workspace.infrastructure.kubernetes.namespace.KubernetesNamespaceFactory;
@@ -84,7 +84,7 @@ public class PVCSubPathHelperTest {
             jobImage,
             k8sNamespaceFactory,
             securityContextProvisioner,
-            new NopExecutorWrapper());
+            new NoopExecutorWrapper());
     lenient().when(k8sNamespaceFactory.create(anyString())).thenReturn(k8sNamespace);
     lenient().when(k8sNamespace.deployments()).thenReturn(osDeployments);
     lenient().when(pod.getStatus()).thenReturn(podStatus);

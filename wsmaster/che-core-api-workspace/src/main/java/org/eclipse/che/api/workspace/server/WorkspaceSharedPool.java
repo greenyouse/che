@@ -14,7 +14,6 @@ package org.eclipse.che.api.workspace.server;
 import com.google.common.primitives.Ints;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.Inject;
-import io.micrometer.core.instrument.Tags;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -58,9 +57,7 @@ public class WorkspaceSharedPool {
       case "cached":
         executor =
             wrapper.wrap(
-                Executors.newCachedThreadPool(factory),
-                WorkspaceSharedPool.class.getName(),
-                Tags.empty());
+                Executors.newCachedThreadPool(factory), WorkspaceSharedPool.class.getName());
         break;
       case "fixed":
         Integer exactSize = exactSizeProp == null ? null : Ints.tryParse(exactSizeProp);
@@ -77,9 +74,7 @@ public class WorkspaceSharedPool {
         }
         executor =
             wrapper.wrap(
-                Executors.newFixedThreadPool(size, factory),
-                WorkspaceSharedPool.class.getName(),
-                Tags.empty());
+                Executors.newFixedThreadPool(size, factory), WorkspaceSharedPool.class.getName());
         break;
       default:
         throw new IllegalArgumentException(

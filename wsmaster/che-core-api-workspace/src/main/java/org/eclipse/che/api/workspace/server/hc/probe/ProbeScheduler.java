@@ -12,7 +12,6 @@
 package org.eclipse.che.api.workspace.server.hc.probe;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import io.micrometer.core.instrument.Tags;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -64,8 +63,7 @@ public class ProbeScheduler {
                     .setDaemon(true)
                     .setNameFormat("ServerProbes-%s")
                     .build()),
-            ProbeScheduler.class.getName(),
-            Tags.empty());
+            ProbeScheduler.class.getName());
     timeouts = new Timer("ServerProbesTimeouts", true);
     probesFutures = new ConcurrentHashMap<>();
   }

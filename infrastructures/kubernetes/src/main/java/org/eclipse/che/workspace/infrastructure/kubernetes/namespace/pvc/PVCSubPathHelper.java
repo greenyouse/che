@@ -24,7 +24,6 @@ import io.fabric8.kubernetes.api.model.ContainerBuilder;
 import io.fabric8.kubernetes.api.model.Pod;
 import io.fabric8.kubernetes.api.model.PodBuilder;
 import io.fabric8.kubernetes.api.model.PodStatus;
-import io.micrometer.core.instrument.Tags;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -102,8 +101,7 @@ public class PVCSubPathHelper {
                     .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
                     .setDaemon(false)
                     .build()),
-            PVCSubPathHelper.class.getName(),
-            Tags.empty());
+            PVCSubPathHelper.class.getName());
   }
 
   /**

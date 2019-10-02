@@ -105,7 +105,7 @@ import org.eclipse.che.api.workspace.server.spi.environment.InternalMachineConfi
 import org.eclipse.che.api.workspace.server.spi.provision.InternalEnvironmentProvisioner;
 import org.eclipse.che.api.workspace.shared.dto.event.MachineStatusEvent;
 import org.eclipse.che.api.workspace.shared.dto.event.RuntimeLogEvent;
-import org.eclipse.che.commons.observability.NopExecutorWrapper;
+import org.eclipse.che.commons.observability.NoopExecutorWrapper;
 import org.eclipse.che.workspace.infrastructure.kubernetes.cache.KubernetesMachineCache;
 import org.eclipse.che.workspace.infrastructure.kubernetes.cache.KubernetesRuntimeStateCache;
 import org.eclipse.che.workspace.infrastructure.kubernetes.environment.KubernetesEnvironment;
@@ -249,7 +249,7 @@ public class KubernetesInternalRuntimeTest {
             probesScheduler,
             workspaceProbesFactory,
             eventPublisher,
-            new KubernetesSharedPool(new NopExecutorWrapper()),
+            new KubernetesSharedPool(new NoopExecutorWrapper()),
             runtimeStatesCache,
             machinesCache,
             startSynchronizerFactory,

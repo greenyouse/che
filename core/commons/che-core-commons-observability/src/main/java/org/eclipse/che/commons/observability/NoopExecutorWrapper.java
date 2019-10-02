@@ -11,31 +11,31 @@
  */
 package org.eclipse.che.commons.observability;
 
-import io.micrometer.core.instrument.Tags;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import org.eclipse.che.commons.schedule.executor.CronExecutorService;
 
-public class NopExecutorWrapper implements ExecutorWrapper {
+public class NoopExecutorWrapper implements ExecutorWrapper {
 
   @Override
-  public ExecutorService wrap(ExecutorService executor, String name, Tags tags) {
+  public ExecutorService wrap(ExecutorService executor, String name, String... tags) {
     return executor;
   }
 
   @Override
-  public ScheduledExecutorService wrap(ScheduledExecutorService executor, String name, Tags tags) {
+  public ScheduledExecutorService wrap(
+      ScheduledExecutorService executor, String name, String... tags) {
     return executor;
   }
 
   @Override
-  public CronExecutorService wrap(CronExecutorService executor, String name, Tags tags) {
+  public CronExecutorService wrap(CronExecutorService executor, String name, String... tags) {
     return executor;
   }
 
   @Override
-  public Executor wrap(Executor executor, String name, Tags tags) {
+  public Executor wrap(Executor executor, String name, String... tags) {
     return executor;
   }
 }

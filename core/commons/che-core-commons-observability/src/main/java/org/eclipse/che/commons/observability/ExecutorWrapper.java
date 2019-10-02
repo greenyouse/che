@@ -11,19 +11,20 @@
  */
 package org.eclipse.che.commons.observability;
 
-import io.micrometer.core.instrument.Tags;
+import com.google.common.annotations.Beta;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import org.eclipse.che.commons.schedule.executor.CronExecutorService;
 
+@Beta
 public interface ExecutorWrapper {
 
-  ExecutorService wrap(ExecutorService executor, String name, Tags tags);
+  ExecutorService wrap(ExecutorService executor, String name, String... tags);
 
-  ScheduledExecutorService wrap(ScheduledExecutorService executor, String name, Tags tags);
+  ScheduledExecutorService wrap(ScheduledExecutorService executor, String name, String... tags);
 
-  CronExecutorService wrap(CronExecutorService executor, String name, Tags tags);
+  CronExecutorService wrap(CronExecutorService executor, String name, String... tags);
 
-  Executor wrap(Executor executor, String name, Tags tags);
+  Executor wrap(Executor executor, String name, String... tags);
 }

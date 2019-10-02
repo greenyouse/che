@@ -12,7 +12,6 @@
 package org.eclipse.che.commons.observability;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import io.micrometer.core.instrument.Tags;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.eclipse.che.commons.lang.concurrent.LoggingUncaughtExceptionHandler;
@@ -33,7 +32,6 @@ public class ObservableThreadPullLauncher extends ThreadPullLauncher {
                     .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
                     .setDaemon(false)
                     .build()),
-            "Annotated-scheduler",
-            Tags.empty()));
+            CronThreadPoolExecutor.class.getName()));
   }
 }

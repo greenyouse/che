@@ -12,7 +12,6 @@
 package org.eclipse.che.workspace.infrastructure.kubernetes.util;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import io.micrometer.core.instrument.Tags;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -40,9 +39,7 @@ public class KubernetesSharedPool {
             .build();
     this.executor =
         executorWrapper.wrap(
-            Executors.newCachedThreadPool(factory),
-            KubernetesSharedPool.class.getName(),
-            Tags.empty());
+            Executors.newCachedThreadPool(factory), KubernetesSharedPool.class.getName());
   }
 
   public ExecutorService getExecutor() {

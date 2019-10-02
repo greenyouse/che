@@ -11,7 +11,6 @@
  */
 package org.eclipse.che.commons.observability;
 
-import io.micrometer.core.instrument.Tags;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.concurrent.TracedExecutor;
 import io.opentracing.contrib.concurrent.TracedExecutorService;
@@ -32,22 +31,23 @@ public class TracingExecutorWrapper implements ExecutorWrapper {
   }
 
   @Override
-  public ExecutorService wrap(ExecutorService executor, String name, Tags tags) {
+  public ExecutorService wrap(ExecutorService executor, String name, String... tags) {
     return new TracedExecutorService(executor, tracer);
   }
 
   @Override
-  public Executor wrap(Executor executor, String name, Tags tags) {
+  public Executor wrap(Executor executor, String name, String... tags) {
     return new TracedExecutor(executor, tracer);
   }
 
   @Override
-  public ScheduledExecutorService wrap(ScheduledExecutorService executor, String name, Tags tags) {
+  public ScheduledExecutorService wrap(
+      ScheduledExecutorService executor, String name, String... tags) {
     return new TracedScheduledExecutorService(executor, tracer);
   }
 
   @Override
-  public CronExecutorService wrap(CronExecutorService executor, String name, Tags tags) {
+  public CronExecutorService wrap(CronExecutorService executor, String name, String... tags) {
     return new TracedCronExecutorService(executor, tracer);
   }
 }

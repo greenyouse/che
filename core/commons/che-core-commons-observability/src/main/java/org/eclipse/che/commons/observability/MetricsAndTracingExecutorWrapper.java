@@ -30,29 +30,30 @@ public class MetricsAndTracingExecutorWrapper extends TracingExecutorWrapper {
   }
 
   @Override
-  public ScheduledExecutorService wrap(ScheduledExecutorService executor, String name, Tags tags) {
+  public ScheduledExecutorService wrap(
+      ScheduledExecutorService executor, String name, String... tags) {
     return super.wrap(
-        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, tags), name, tags);
+        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, Tags.of(tags)), name, tags);
   }
 
   @Override
-  public ExecutorService wrap(ExecutorService executor, String name, Tags tags) {
+  public ExecutorService wrap(ExecutorService executor, String name, String... tags) {
     return super.wrap(
-        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, tags), name, tags);
+        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, Tags.of(tags)), name, tags);
   }
 
   @Override
-  public Executor wrap(Executor executor, String name, Tags tags) {
+  public Executor wrap(Executor executor, String name, String... tags) {
     return super.wrap(
         io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics.monitor(
-            meterRegistry, executor, name, tags),
+            meterRegistry, executor, name, Tags.of(tags)),
         name,
         tags);
   }
 
   @Override
-  public CronExecutorService wrap(CronExecutorService executor, String name, Tags tags) {
+  public CronExecutorService wrap(CronExecutorService executor, String name, String... tags) {
     return super.wrap(
-        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, tags), name, tags);
+        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, Tags.of(tags)), name, tags);
   }
 }

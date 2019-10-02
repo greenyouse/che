@@ -21,7 +21,7 @@ public class ExecutorWrapperModule extends AbstractModule {
 
     if (!Boolean.valueOf(System.getenv("CHE_METRICS_ENABLED"))
         && !Boolean.valueOf(System.getenv("CHE_TRACING_ENABLED"))) {
-      bind(ExecutorWrapper.class).to(NopExecutorWrapper.class);
+      bind(ExecutorWrapper.class).to(NoopExecutorWrapper.class);
     } else if (Boolean.valueOf(System.getenv("CHE_METRICS_ENABLED"))) {
       // the situation with disabled tracing handled over NopTracer
       bind(ExecutorWrapper.class).to(MetricsAndTracingExecutorWrapper.class);
