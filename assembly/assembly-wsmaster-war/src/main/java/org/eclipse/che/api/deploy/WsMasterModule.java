@@ -271,7 +271,7 @@ public class WsMasterModule extends AbstractModule {
     if (Boolean.valueOf(System.getenv("CHE_METRICS_ENABLED"))) {
       install(new org.eclipse.che.core.metrics.MetricsModule());
       install(new WsMasterMetricsModule());
-      install(new MetricsOverrideBinding());
+      //  install(new MetricsOverrideBinding());
     }
     if (Boolean.valueOf(System.getenv("CHE_TRACING_ENABLED"))
         && Boolean.valueOf(System.getenv("CHE_METRICS_ENABLED"))) {

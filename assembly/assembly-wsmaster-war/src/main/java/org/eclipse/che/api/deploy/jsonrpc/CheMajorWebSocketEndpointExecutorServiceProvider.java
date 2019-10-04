@@ -13,16 +13,21 @@ package org.eclipse.che.api.deploy.jsonrpc;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import org.eclipse.che.commons.lang.concurrent.LoggingUncaughtExceptionHandler;
 import org.eclipse.che.commons.lang.execution.ExecutorServiceProvider;
+import org.eclipse.che.commons.observability.ExecutorWrapper;
+import org.eclipse.che.commons.observability.ObservableExecutorServiceProvider;
 import org.slf4j.Logger;
 
 /** {@link ExecutorService} provider used in {@link CheMajorWebSocketEndpoint}. */
 @Singleton
-public class CheMajorWebSocketEndpointExecutorServiceProvider extends ExecutorServiceProvider {
+public class CheMajorWebSocketEndpointExecutorServiceProvider
+    extends ObservableExecutorServiceProvider {
 
   private static final Logger LOG = getLogger(ExecutorServiceProvider.class);
 
@@ -37,16 +42,26 @@ public class CheMajorWebSocketEndpointExecutorServiceProvider extends ExecutorSe
   public CheMajorWebSocketEndpointExecutorServiceProvider(
       @Named(JSON_RPC_MAJOR_CORE_POOL_SIZE_PARAMETER_NAME) int corePoolSize,
       @Named(JSON_RPC_MAJOR_MAX_POOL_SIZE_PARAMETER_NAME) int maxPoolSize,
-      @Named(JSON_RPC_MAJOR_QUEUE_CAPACITY_PARAMETER_NAME) int queueCapacity) {
+      @Named(JSON_RPC_MAJOR_QUEUE_CAPACITY_PARAMETER_NAME) int queueCapacity,
+      ExecutorWrapper wrapper) {
     super(
-        corePoolSize,
-        maxPoolSize,
-        queueCapacity,
-        (r, executor) ->
-            LOG.error(
-                "Executor on major websocket endpoint rejected to handle the payload {}. Some important messages may be lost. Consider increasing `{}`. Now it's configured to {}",
-                r,
-                JSON_RPC_MAJOR_QUEUE_CAPACITY_PARAMETER_NAME,
-                queueCapacity));
+        new ExecutorServiceProvider(
+            corePoolSize,
+            maxPoolSize,
+            queueCapacity,
+            new ThreadFactoryBuilder()
+                .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
+                .setNameFormat(
+                    CheMajorWebSocketEndpointExecutorServiceProvider.class.getSimpleName() + "-%d")
+                .setDaemon(true)
+                .build(),
+            (r, executor) ->
+                LOG.error(
+                    "Executor on major websocket endpoint rejected to handle the payload {}. Some important messages may be lost. Consider increasing `{}`. Now it's configured to {}",
+                    r,
+                    JSON_RPC_MAJOR_QUEUE_CAPACITY_PARAMETER_NAME,
+                    queueCapacity)),
+        wrapper,
+        "che.core.jsonrpc.Major");
   }
 }

@@ -13,7 +13,6 @@ package org.eclipse.che.commons.observability;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.Timer;
 import java.util.concurrent.Future;
 import org.eclipse.che.commons.schedule.executor.CronExecutorService;
@@ -21,10 +20,8 @@ import org.eclipse.che.commons.schedule.executor.CronExpression;
 
 public class TimedCronExecutorService extends TimedScheduledExecutorService
     implements CronExecutorService {
-  private final MeterRegistry registry;
   private final CronExecutorService delegate;
-  private final String executorServiceName;
-  private final Iterable<Tag> tags;
+
   private final Timer timer;
 
   public TimedCronExecutorService(
@@ -33,11 +30,8 @@ public class TimedCronExecutorService extends TimedScheduledExecutorService
       String executorServiceName,
       Iterable<Tag> tags) {
     super(registry, delegate, executorServiceName, tags);
-    this.registry = registry;
     this.delegate = delegate;
-    this.executorServiceName = executorServiceName;
-    this.tags = tags;
-    this.timer = registry.timer("executor.cron", Tags.concat(tags, "name", executorServiceName));
+    this.timer = getOrCreateTimer();
   }
 
   @Override

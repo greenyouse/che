@@ -16,10 +16,8 @@ import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.internal.TimedExecutorService;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.lang.reflect.Field;
+import java.util.concurrent.*;
 
 public class TimedScheduledExecutorService extends TimedExecutorService
     implements ScheduledExecutorService {
@@ -39,8 +37,7 @@ public class TimedScheduledExecutorService extends TimedExecutorService
     this.delegate = delegate;
     this.executorServiceName = executorServiceName;
     this.tags = tags;
-    this.timer =
-        registry.timer("executor.schedule", Tags.concat(tags, "name", executorServiceName));
+    this.timer = getOrCreateTimer();
   }
 
   @Override
@@ -63,5 +60,16 @@ public class TimedScheduledExecutorService extends TimedExecutorService
   public ScheduledFuture<?> scheduleWithFixedDelay(
       Runnable command, long initialDelay, long delay, TimeUnit unit) {
     return delegate.scheduleWithFixedDelay(timer.wrap(command), initialDelay, delay, unit);
+  }
+
+  protected Timer getOrCreateTimer() {
+    try {
+      Field e = TimedExecutorService.class.getDeclaredField("timer");
+      e.setAccessible(true);
+      return (Timer) e.get(this);
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      // Do nothing. We simply can't get to the underlying ThreadPoolExecutor.
+    }
+    return registry.timer("executor_timer", Tags.concat(tags, "name", executorServiceName));
   }
 }

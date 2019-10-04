@@ -45,6 +45,7 @@ public class ExecutorServiceProvider implements Provider<ExecutorService> {
   private static final Logger LOG = getLogger(ExecutorServiceProvider.class);
 
   private final ThreadPoolExecutor executor;
+
   /**
    * @param corePoolSize - corePoolSize of ThreadPoolExecutor
    * @param maxPoolSize - maximumPoolSize of ThreadPoolExecutor
@@ -56,22 +57,52 @@ public class ExecutorServiceProvider implements Provider<ExecutorService> {
       int corePoolSize,
       int maxPoolSize,
       int queueCapacity,
+      ThreadFactory threadFactory,
       RejectedExecutionHandler rejectedExecutionHandler) {
-    ThreadFactory factory =
-        new ThreadFactoryBuilder()
-            .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
-            .setNameFormat(this.getClass().getSimpleName() + "-%d")
-            .setDaemon(true)
-            .build();
 
-    executor =
+    this(
         new ThreadPoolExecutor(
             corePoolSize,
             maxPoolSize,
             60L,
             SECONDS,
             queueCapacity > 0 ? new LinkedBlockingQueue<>(queueCapacity) : new SynchronousQueue<>(),
-            factory);
+            threadFactory));
+    executor.setRejectedExecutionHandler(rejectedExecutionHandler);
+    executor.prestartCoreThread();
+  }
+
+  /**
+   * @param corePoolSize - corePoolSize of ThreadPoolExecutor
+   * @param maxPoolSize - maximumPoolSize of ThreadPoolExecutor
+   * @param queueCapacity - queue capacity. if > 0 then this is capacity of {@link
+   *     LinkedBlockingQueue} if <=0 then {@link SynchronousQueue} are used.
+   */
+  public ExecutorServiceProvider(
+      int corePoolSize, int maxPoolSize, int queueCapacity, ThreadFactory threadFactory) {
+    this(
+        corePoolSize,
+        maxPoolSize,
+        queueCapacity,
+        threadFactory,
+        (r, e) -> LOG.warn("Executor rejected to handle the payload {}", r));
+  }
+
+  public ExecutorServiceProvider(
+      int corePoolSize,
+      int maxPoolSize,
+      int queueCapacity,
+      RejectedExecutionHandler rejectedExecutionHandler) {
+    this(
+        corePoolSize,
+        maxPoolSize,
+        queueCapacity,
+        new ThreadFactoryBuilder()
+            .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
+            .setNameFormat(ExecutorServiceProvider.class.getSimpleName() + "-%d")
+            .setDaemon(true)
+            .build());
+
     executor.setRejectedExecutionHandler(rejectedExecutionHandler);
     executor.prestartCoreThread();
   }
@@ -87,7 +118,15 @@ public class ExecutorServiceProvider implements Provider<ExecutorService> {
         corePoolSize,
         maxPoolSize,
         queueCapacity,
-        (r, e) -> LOG.warn("Executor rejected to handle the payload {}", r));
+        new ThreadFactoryBuilder()
+            .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
+            .setNameFormat(ExecutorServiceProvider.class.getSimpleName() + "-%d")
+            .setDaemon(true)
+            .build());
+  }
+
+  public ExecutorServiceProvider(ThreadPoolExecutor executor) {
+    this.executor = executor;
   }
 
   @Override
