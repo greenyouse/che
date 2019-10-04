@@ -51,16 +51,18 @@ public class MailSender {
   private final MailSessionProvider mailSessionProvider;
 
   @Inject
-  public MailSender(MailSessionProvider mailSessionProvider , ExecutorWrapper wrapper) {
+  public MailSender(MailSessionProvider mailSessionProvider, ExecutorWrapper wrapper) {
     this.mailSessionProvider = mailSessionProvider;
-    this.executor =wrapper.wrap(
-        newFixedThreadPool(
-            2 * Runtime.getRuntime().availableProcessors(),
-            new ThreadFactoryBuilder()
-                .setNameFormat("MailNotificationsPool-%d")
-                .setDaemon(false)
-                .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
-                .build()), MailSender.class.getName()) ;
+    this.executor =
+        wrapper.wrap(
+            newFixedThreadPool(
+                2 * Runtime.getRuntime().availableProcessors(),
+                new ThreadFactoryBuilder()
+                    .setNameFormat("MailNotificationsPool-%d")
+                    .setDaemon(false)
+                    .setUncaughtExceptionHandler(LoggingUncaughtExceptionHandler.getInstance())
+                    .build()),
+            MailSender.class.getName());
   }
 
   public void sendAsync(EmailBean emailBean) {
