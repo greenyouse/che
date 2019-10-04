@@ -25,6 +25,7 @@ import org.eclipse.che.selenium.core.organization.InjectTestOrganization;
 import org.eclipse.che.selenium.core.organization.TestOrganization;
 import org.eclipse.che.selenium.core.user.AdminTestUser;
 import org.eclipse.che.selenium.core.user.TestUser;
+import org.eclipse.che.selenium.core.utils.WaitUtils;
 import org.eclipse.che.selenium.pageobject.dashboard.CheMultiuserAdminDashboard;
 import org.eclipse.che.selenium.pageobject.dashboard.NavigationBar;
 import org.eclipse.che.selenium.pageobject.dashboard.NewWorkspace;
@@ -37,7 +38,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-@Test(groups = {TestGroup.MULTIUSER, TestGroup.OPENSHIFT, TestGroup.K8S, TestGroup.FLAKY})
+@Test(groups = {TestGroup.MULTIUSER, TestGroup.OPENSHIFT, TestGroup.K8S})
 public class ShareWorkspaceOwnerTest {
 
   private static final String WORKSPACE_NAME = generate("workspace", 4);
@@ -135,6 +136,10 @@ public class ShareWorkspaceOwnerTest {
     // check the added member permission
     workspaceShare.waitMemberNameInShareList(memberName);
     assertEquals(workspaceShare.getMemberPermissions(memberName), MEMBER_PERMISSIONS);
+
+    // wait for 3 second because 'Add Developer' button is inactive some time after closing 'Add
+    // member' dialog
+    WaitUtils.sleepQuietly(3);
 
     // check the 'No members in team' dialog
     workspaceShare.clickOnAddDeveloperButton();
