@@ -24,6 +24,4 @@ public interface ExecutorWrapper {
   ScheduledExecutorService wrap(ScheduledExecutorService executor, String name, String... tags);
 
   CronExecutorService wrap(CronExecutorService executor, String name, String... tags);
-
-  // Executor wrap(Executor executor, String name, String... tags);
 }
