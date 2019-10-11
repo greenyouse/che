@@ -12,10 +12,8 @@
 package org.eclipse.che.commons.observability;
 
 import io.opentracing.Tracer;
-import io.opentracing.contrib.concurrent.TracedExecutor;
 import io.opentracing.contrib.concurrent.TracedExecutorService;
 import io.opentracing.contrib.concurrent.TracedScheduledExecutorService;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.inject.Inject;
@@ -33,11 +31,6 @@ public class TracingExecutorWrapper implements ExecutorWrapper {
   @Override
   public ExecutorService wrap(ExecutorService executor, String name, String... tags) {
     return new TracedExecutorService(executor, tracer);
-  }
-
-  @Override
-  public Executor wrap(Executor executor, String name, String... tags) {
-    return new TracedExecutor(executor, tracer);
   }
 
   @Override

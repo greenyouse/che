@@ -11,7 +11,6 @@
  */
 package org.eclipse.che.commons.observability;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import org.eclipse.che.commons.schedule.executor.CronExecutorService;
@@ -31,11 +30,6 @@ public class NoopExecutorWrapper implements ExecutorWrapper {
 
   @Override
   public CronExecutorService wrap(CronExecutorService executor, String name, String... tags) {
-    return executor;
-  }
-
-  @Override
-  public Executor wrap(Executor executor, String name, String... tags) {
     return executor;
   }
 }

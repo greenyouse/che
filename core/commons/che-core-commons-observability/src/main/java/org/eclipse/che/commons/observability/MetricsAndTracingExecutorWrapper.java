@@ -13,10 +13,11 @@ package org.eclipse.che.commons.observability;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
 import io.opentracing.Tracer;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 import javax.inject.Inject;
 import org.eclipse.che.commons.schedule.executor.CronExecutorService;
 
@@ -32,28 +33,44 @@ public class MetricsAndTracingExecutorWrapper extends TracingExecutorWrapper {
   @Override
   public ScheduledExecutorService wrap(
       ScheduledExecutorService executor, String name, String... tags) {
-    return super.wrap(
-        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, Tags.of(tags)), name, tags);
+    if (executor instanceof ThreadPoolExecutor) {
+      CountedThreadFactory.monitorThreads(meterRegistry, (ThreadPoolExecutor) executor, name);
+      CountedRejectedExecutionHandler.monitorRejections(
+          meterRegistry, (ThreadPoolExecutor) executor, name);
+    }
+
+    ScheduledExecutorService monitoredExecutor =
+        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, Tags.of(tags));
+
+    return super.wrap(monitoredExecutor, name, tags);
   }
 
   @Override
   public ExecutorService wrap(ExecutorService executor, String name, String... tags) {
-    return super.wrap(
-        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, Tags.of(tags)), name, tags);
-  }
+    if (executor instanceof ThreadPoolExecutor) {
+      CountedThreadFactory.monitorThreads(meterRegistry, (ThreadPoolExecutor) executor, name);
+      CountedRejectedExecutionHandler.monitorRejections(
+          meterRegistry, (ThreadPoolExecutor) executor, name);
+    }
+    ExecutorService monitoredExecutor =
+        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, Tags.of(tags));
 
-  @Override
-  public Executor wrap(Executor executor, String name, String... tags) {
-    return super.wrap(
-        io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics.monitor(
-            meterRegistry, executor, name, Tags.of(tags)),
-        name,
-        tags);
+    return super.wrap(monitoredExecutor, name, tags);
   }
 
   @Override
   public CronExecutorService wrap(CronExecutorService executor, String name, String... tags) {
+    if (executor instanceof ThreadPoolExecutor) {
+      CountedThreadFactory.monitorThreads(meterRegistry, (ThreadPoolExecutor) executor, name);
+      CountedRejectedExecutionHandler.monitorRejections(
+          meterRegistry, (ThreadPoolExecutor) executor, name);
+    }
+
+    new io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics(
+            executor, name, Tags.of(tags))
+        .bindTo(meterRegistry);
+
     return super.wrap(
-        ExecutorServiceMetrics.monitor(meterRegistry, executor, name, Tags.of(tags)), name, tags);
+        new TimedCronExecutorService(meterRegistry, executor, name, Tags.of(tags)), name, tags);
   }
 }

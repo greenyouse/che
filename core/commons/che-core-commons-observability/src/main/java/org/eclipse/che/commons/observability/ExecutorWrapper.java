@@ -12,7 +12,6 @@
 package org.eclipse.che.commons.observability;
 
 import com.google.common.annotations.Beta;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import org.eclipse.che.commons.schedule.executor.CronExecutorService;
@@ -26,5 +25,5 @@ public interface ExecutorWrapper {
 
   CronExecutorService wrap(CronExecutorService executor, String name, String... tags);
 
-  Executor wrap(Executor executor, String name, String... tags);
+  // Executor wrap(Executor executor, String name, String... tags);
 }

@@ -11,9 +11,13 @@
  */
 package org.eclipse.che.commons.observability;
 
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.internal.TimedScheduledExecutorService;
+import java.lang.reflect.Field;
 import java.util.concurrent.Future;
 import org.eclipse.che.commons.schedule.executor.CronExecutorService;
 import org.eclipse.che.commons.schedule.executor.CronExpression;
@@ -22,7 +26,9 @@ public class TimedCronExecutorService extends TimedScheduledExecutorService
     implements CronExecutorService {
   private final CronExecutorService delegate;
 
-  private final Timer timer;
+  private final Timer executionTimer;
+
+  private final Counter scheduledCron;
 
   public TimedCronExecutorService(
       MeterRegistry registry,
@@ -31,11 +37,24 @@ public class TimedCronExecutorService extends TimedScheduledExecutorService
       Iterable<Tag> tags) {
     super(registry, delegate, executorServiceName, tags);
     this.delegate = delegate;
-    this.timer = getOrCreateTimer();
+    this.executionTimer = getTimer();
+    this.scheduledCron =
+        registry.counter("executor.scheduled.cron", Tags.concat(tags, "name", executorServiceName));
   }
 
   @Override
   public Future<?> schedule(Runnable task, CronExpression expression) {
-    return delegate.schedule(timer.wrap(task), expression);
+    return delegate.schedule(executionTimer.wrap(task), expression);
+  }
+
+  protected Timer getTimer() {
+    try {
+      Field e = TimedScheduledExecutorService.class.getDeclaredField("executionTimer");
+      e.setAccessible(true);
+      return (Timer) e.get(this);
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      // Do nothing. We simply can't get to the underlying Timer.
+      throw new RuntimeException(e.getMessage(), e);
+    }
   }
 }
