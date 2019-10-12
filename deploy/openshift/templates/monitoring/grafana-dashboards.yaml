@@ -5506,7 +5506,7 @@ data:
           },
           "id": 22,
           "panels": [],
-          "title": "JsonRPC",
+          "title": "Executors",
           "type": "row"
         },
         {
@@ -5519,17 +5519,19 @@ data:
           "fillGradient": 0,
           "gridPos": {
             "h": 7,
-            "w": 8,
+            "w": 12,
             "x": 0,
             "y": 50
           },
           "id": 18,
+          "interval": "",
           "legend": {
             "alignAsTable": false,
-            "avg": false,
+            "avg": true,
             "current": true,
             "max": true,
             "min": false,
+            "rightSide": false,
             "show": true,
             "total": false,
             "values": true
@@ -5552,43 +5554,19 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "executor_pool_size_threads{name=\"che.core.jsonrpc.major_executor\",}",
+              "expr": "executor_thread_active",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 1,
-              "legendFormat": "major size",
+              "legendFormat": "{{name}}",
               "refId": "A"
-            },
-            {
-              "expr": "executor_active_threads{name=\"che.core.jsonrpc.major_executor\",}",
-              "format": "time_series",
-              "hide": false,
-              "intervalFactor": 1,
-              "legendFormat": "major active",
-              "refId": "B"
-            },
-            {
-              "expr": "executor_pool_size_threads{name=\"che.core.jsonrpc.minor_executor\",}",
-              "format": "time_series",
-              "hide": false,
-              "intervalFactor": 1,
-              "legendFormat": "minor size",
-              "refId": "C"
-            },
-            {
-              "expr": "executor_active_threads{name=\"che.core.jsonrpc.minor_executor\",}",
-              "format": "time_series",
-              "hide": false,
-              "intervalFactor": 1,
-              "legendFormat": "minor active",
-              "refId": "D"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "che.core.jsonrpc.executor_pool",
+          "title": "Thread active",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -5605,107 +5583,7 @@ data:
           "yaxes": [
             {
               "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$datasource",
-          "fill": 1,
-          "fillGradient": 0,
-          "gridPos": {
-            "h": 7,
-            "w": 8,
-            "x": 8,
-            "y": 50
-          },
-          "id": 26,
-          "legend": {
-            "alignAsTable": false,
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null as zero",
-          "options": {
-            "dataLinks": []
-          },
-          "paceLength": 10,
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "executor_queued_threads{name=\"che.core.jsonrpc.major_executor\",}",
-              "format": "time_series",
-              "instant": false,
-              "intervalFactor": 1,
-              "legendFormat": "major",
-              "refId": "A"
-            },
-            {
-              "expr": "executor_queued_threads{name=\"che.core.jsonrpc.minor_executor\",}",
-              "format": "time_series",
-              "instant": false,
-              "intervalFactor": 1,
-              "legendFormat": "minor",
-              "refId": "B"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "JsonRpcQueue",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
+              "label": "",
               "logBase": 1,
               "max": null,
               "min": "0",
@@ -5716,8 +5594,8 @@ data:
               "label": null,
               "logBase": 1,
               "max": null,
-              "min": "0",
-              "show": true
+              "min": null,
+              "show": false
             }
           ],
           "yaxis": {
@@ -5736,18 +5614,18 @@ data:
           "fillGradient": 0,
           "gridPos": {
             "h": 7,
-            "w": 8,
-            "x": 16,
+            "w": 12,
+            "x": 12,
             "y": 50
           },
-          "id": 32,
+         "id": 32,
           "legend": {
             "alignAsTable": false,
             "avg": false,
             "current": true,
             "hideEmpty": false,
             "hideZero": false,
-            "max": true,
+            "max": false,
             "min": false,
             "show": true,
             "total": false,
@@ -5771,27 +5649,19 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(deriv(executor_rejected_tasks_total{name=\"che.core.jsonrpc.major_executor\",}[1m]))",
+              "expr": "executor_thread_created_total",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "major",
+              "legendFormat": "{{name}}",
               "refId": "A"
-            },
-            {
-              "expr": "sum(deriv(executor_rejected_tasks_total{name=\"che.core.jsonrpc.minor_executor\",}[1m]))",
-              "format": "time_series",
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "minor",
-              "refId": "B"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Rejected message/minute",
+          "title": "Thread created",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -5821,7 +5691,7 @@ data:
               "logBase": 1,
               "max": null,
               "min": "0",
-              "show": true
+              "show": false
             }
           ],
           "yaxis": {
@@ -5839,11 +5709,103 @@ data:
           "fillGradient": 0,
           "gridPos": {
             "h": 7,
-            "w": 8,
+            "w": 12,
             "x": 0,
             "y": 57
           },
           "id": 30,
+          "legend": {
+            "avg": false,
+            "current": true,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "options": {
+            "dataLinks": []
+          },
+          "paceLength": 10,
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "executor_thread_terminated_total",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{name}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Thread terminated",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$datasource",
+          "description": "",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 57
+          },
+          "id": 28,
+          "interval": "",
           "legend": {
             "avg": false,
             "current": true,
@@ -5871,25 +5833,19 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "executor_seconds_max{name=\"che.core.jsonrpc.major_executor\",}",
+              "expr": "increase(executor_thread_created_total[1m])",
               "format": "time_series",
+              "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "major",
+              "legendFormat": "{{name}}",
               "refId": "A"
-            },
-            {
-              "expr": "executor_seconds_max{name=\"che.core.jsonrpc.minor_executor\",}",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "minor",
-              "refId": "B"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Seconds Max",
+          "title": "Created thread/minute",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -5909,7 +5865,7 @@ data:
               "label": null,
               "logBase": 1,
               "max": null,
-              "min": null,
+              "min": "0",
               "show": true
             },
             {
@@ -5917,7 +5873,7 @@ data:
               "label": null,
               "logBase": 1,
               "max": null,
-              "min": null,
+              "min": "0",
               "show": true
             }
           ],
@@ -5936,9 +5892,103 @@ data:
           "fillGradient": 0,
           "gridPos": {
             "h": 7,
-            "w": 8,
-            "x": 8,
-            "y": 57
+            "w": 12,
+            "x": 0,
+            "y": 64
+          },
+          "id": 26,
+          "interval": "",
+          "legend": {
+          "alignAsTable": false,
+            "avg": false,
+            "current": true,
+            "max": true,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "options": {
+            "dataLinks": []
+          },
+          "paceLength": 10,
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "executor_active_threads",
+              "format": "time_series",
+              "instant": false,
+              "intervalFactor": 1,
+              "legendFormat": "{{name}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Executor threads active",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+             "show": false
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "$datasource",
+          "description": "",
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 12,
+            "y": 64
           },
           "id": 34,
           "legend": {
@@ -5968,26 +6018,19 @@ data:
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(deriv(executor_seconds_sum{name=\"che.core.jsonrpc.major_executor\",}[1m]))",
+              "expr": "executor_pool_size_threads",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "major",
+             "legendFormat": "{{name}}",
               "refId": "A"
-            },
-            {
-              "expr": "sum(deriv(executor_seconds_sum{name=\"che.core.jsonrpc.minor_executor\",}[1m]))",
-              "format": "time_series",
-              "intervalFactor": 1,
-              "legendFormat": "minor",
-              "refId": "B"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Seconds Sum",
+          "title": "Executor pool size",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -6016,107 +6059,7 @@ data:
               "logBase": 1,
               "max": null,
               "min": "0",
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "$datasource",
-          "description": "",
-          "fill": 1,
-          "fillGradient": 0,
-          "gridPos": {
-            "h": 7,
-            "w": 8,
-            "x": 16,
-            "y": 57
-          },
-          "id": 28,
-          "legend": {
-            "avg": false,
-            "current": true,
-            "max": true,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "links": [],
-          "nullPointMode": "null as zero",
-          "options": {
-            "dataLinks": []
-          },
-          "paceLength": 10,
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "expr": "sum(deriv(executor_completed_tasks_total{name=\"che.core.jsonrpc.major_executor\",}[1m]))",
-              "format": "time_series",
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "major",
-              "refId": "A"
-            },
-            {
-              "expr": "sum(deriv(executor_completed_tasks_total{name=\"che.core.jsonrpc.minor_executor\",}[1m]))",
-              "format": "time_series",
-              "interval": "",
-              "intervalFactor": 1,
-              "legendFormat": "minor",
-              "refId": "B"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Completed Task/minute",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": "0",
-              "show": true
+              "show": false
             }
           ],
           "yaxis": {
@@ -6130,7 +6073,7 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 64
+            "y": 71
           },
           "id": 61,
           "panels": [],
@@ -6149,7 +6092,7 @@ data:
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 65
+            "y": 72
           },
           "id": 55,
           "legend": {
@@ -6262,7 +6205,7 @@ data:
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 65
+            "y": 72
           },
           "id": 56,
           "legend": {
@@ -6375,7 +6318,7 @@ data:
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 72
+            "y": 79
           },
           "id": 51,
           "legend": {
@@ -6488,7 +6431,7 @@ data:
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 72
+            "y": 79
           },
           "id": 54,
           "legend": {
@@ -6601,7 +6544,7 @@ data:
             "h": 7,
             "w": 12,
             "x": 0,
-            "y": 79
+            "y": 86
           },
           "id": 57,
           "legend": {
@@ -6694,7 +6637,7 @@ data:
             "h": 7,
             "w": 12,
             "x": 12,
-            "y": 79
+            "y": 86
           },
           "id": 58,
           "legend": {
@@ -6781,7 +6724,7 @@ data:
             "h": 1,
             "w": 24,
             "x": 0,
-            "y": 86
+            "y": 93
           },
           "id": 42,
           "panels": [
