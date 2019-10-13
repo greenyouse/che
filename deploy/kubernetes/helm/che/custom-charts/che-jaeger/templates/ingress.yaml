@@ -10,7 +10,7 @@
 {{- printf "jaeger-%s.%s" .Release.Namespace .Values.global.ingressDomain }}
 {{- end }}
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Ingress
 metadata:
   name: jaeger-query
