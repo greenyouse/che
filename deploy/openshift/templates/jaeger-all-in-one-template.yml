@@ -45,7 +45,7 @@ metadata:
     name: jaeger-infra
     jaeger-infra: jaeger-template-all-in-one
 objects:
-- apiVersion: extensions/v1beta1
+- apiVersion: apps/v1
   kind: Deployment
   metadata:
     name: ${JAEGER_SERVICE_NAME}
